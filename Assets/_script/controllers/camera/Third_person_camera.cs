@@ -4,11 +4,13 @@ using System.Collections;
 namespace Controller{
 	namespace Eye {
 		public class Third_person_camera : MonoBehaviour {
-			public GameObject look_at;
+			public Transform look_at;
 			public GameObject eye;
 			public float distance = 5.0f;
 			public float distance_min = 3.0f;
 			public float distance_max = 10.0f;
+
+			public float distance_smooth = 0.05f;
 
 			public float x_mouse_sensitivity = 5f;
 			public float y_mouse_sensitivity = 5f;
@@ -21,6 +23,9 @@ namespace Controller{
 			private float mouse_y = 0f;
 			private float start_distance = 0f;
 			private float desired_distance = 0f;
+			private float velocity_distance = 0f;
+
+			private Vector3 desired_position = Vector3.zero;
 
 			private Joystick _joystick;
 
@@ -64,6 +69,11 @@ namespace Controller{
 			}
 
 			protected void calculate_desired_psoition() {
+				// evaluar la distacia
+				distance = Mathf.SmoothDamp(distance, desired_distance, ref velocity_distance, distance_smooth);
+
+				// calcular la posicion deseada
+				desired_position = calculate_position( mouse_y, mouse_x, distance );
 			}
 
 			protected void update_position() {
@@ -85,6 +95,12 @@ namespace Controller{
 					eye.AddComponent("Camera");
 					eye.tag = "MainCamera";
 				}
+			}
+
+			protected Vector3 calculate_position(float rotation_x, float rotation_y, float distace) {
+				Vector3 direction = new Vector3(0, 0, -distance);
+				Quaternion rotation = Quaternion.Euler(rotation_x, rotation_y, 0f);
+				return look_at.position + rotation * direction;
 			}
 
 			/// <summary>

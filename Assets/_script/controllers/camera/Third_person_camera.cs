@@ -19,11 +19,18 @@ namespace Controller{
 			public float y_min_limit = -40f;
 			public float y_max_limit = 80f;
 
+			public float x_smoot = 0.05f;
+			public float y_smoot = 0.1f;
+
 			private float mouse_x = 0f;
 			private float mouse_y = 0f;
 			private float start_distance = 0f;
 			private float desired_distance = 0f;
 			private float velocity_distance = 0f;
+			private float velocity_x = 0;
+			private float velocity_y = 0;
+			private float velocity_z = 0;
+			private Vector3 position = Vector3.zero;
 
 			private Vector3 desired_position = Vector3.zero;
 
@@ -37,11 +44,11 @@ namespace Controller{
 
 			protected void Start() {
 				distance = Mathf.Clamp( distance, distance_min, distance_max );
-				start_distance = distance_max;
+				start_distance = distance;
 				Reset();
 			}
 
-			protected void UpdateLate() {
+			protected void LateUpdate() {
 				if ( look_at == null )
 					return;
 				handled_input();
@@ -50,22 +57,19 @@ namespace Controller{
 			}
 
 			protected void handled_input() {
-				float dead_zone = 0.1f;
+				float dead_zone = 0.01f;
 				_joystick.update_all();
 				if ( Input.GetMouseButton( 1 ) ) {
 					Vector3 mouse_axis = _joystick.axis_mouse;
 					mouse_x += mouse_axis.x * x_mouse_sensitivity;
 					mouse_y += mouse_axis.y * y_mouse_sensitivity;
 				}
-
 				mouse_y = helper.math.clamp_angle(mouse_y, y_min_limit, y_max_limit);
 
 				float scroll_wheel = _joystick.mouse_wheel;
-				if ( scroll_wheel < -dead_zone && scroll_wheel > dead_zone ) {
+				Debug.Log( scroll_wheel );
+				if ( scroll_wheel < -dead_zone || dead_zone < scroll_wheel) 
 					desired_distance = Mathf.Clamp(distance - scroll_wheel * mouse_wheel_sensitivity, distance_min, distance_max);
-				}
-
-				
 			}
 
 			protected void calculate_desired_psoition() {
@@ -77,6 +81,13 @@ namespace Controller{
 			}
 
 			protected void update_position() {
+				float pos_x = Mathf.SmoothDamp( position.x, desired_position.x, ref velocity_x, x_smoot );
+				float pos_y = Mathf.SmoothDamp( position.y, desired_position.y, ref velocity_y, y_smoot );
+				float pos_z = Mathf.SmoothDamp( position.z, desired_position.z, ref velocity_x, x_smoot );
+
+				position = new Vector3(pos_x, pos_y, pos_z);
+				eye.transform.position = position;
+				eye.transform.LookAt( look_at );
 			}
 
 			public void Reset() {
@@ -97,11 +108,22 @@ namespace Controller{
 				}
 			}
 
+			/// <summary>
+			/// calcula la posicion a la que tiene que moverse la camara
+			/// </summary>
+			/// <param name="rotation_x"> angulo de la orbita x </param>
+			/// <param name="rotation_y"> angulo de la orbita y </param>
+			/// <param name="distace"> distancia a la que estara la camara del objetivo </param>
+			/// <returns> vector de la posicion a la que tiene que moverse la camara </returns>
 			protected Vector3 calculate_position(float rotation_x, float rotation_y, float distace) {
 				Vector3 direction = new Vector3(0, 0, -distance);
 				Quaternion rotation = Quaternion.Euler(rotation_x, rotation_y, 0f);
 				return look_at.position + rotation * direction;
 			}
+
+			//protected Vector3 calculate_position(Vector3) {
+			//	Vector3 
+			//}
 
 			/// <summary>
 			/// inicializa el chache del script

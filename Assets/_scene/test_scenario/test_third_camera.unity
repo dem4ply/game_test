@@ -4341,8 +4341,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4560992c5c2511b4989c55cbc65e4248, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  look_at: {fileID: 1472402928}
+  look_at: {fileID: 690330137}
   eye: {fileID: 2087762531}
+  distance: 5
+  distance_min: 1
+  distance_max: 10
+  distance_smooth: .0500000007
+  x_mouse_sensitivity: 5
+  y_mouse_sensitivity: 5
+  mouse_wheel_sensitivity: 5
+  y_min_limit: -40
+  y_max_limit: 80
+  x_smoot: .0199999996
+  y_smoot: .100000001
 --- !u!95 &1472402934
 Animator:
   serializedVersion: 3
@@ -6241,7 +6252,7 @@ Light:
   serializedVersion: 3
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: .400000006
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10

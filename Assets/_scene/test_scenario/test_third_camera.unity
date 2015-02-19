@@ -1692,6 +1692,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 616447529}
   m_RootOrder: 0
+--- !u!1 &690330136
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 690330137}
+  m_Layer: 0
+  m_Name: look_at
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &690330137
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 690330136}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.329, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1472402929}
+  m_RootOrder: 1
 --- !u!1 &703080356
 GameObject:
   m_ObjectHideFlags: 0
@@ -4242,6 +4269,8 @@ GameObject:
   - 143: {fileID: 1472402930}
   - 114: {fileID: 1472402932}
   - 114: {fileID: 1472402931}
+  - 114: {fileID: 1472402933}
+  - 95: {fileID: 1472402934}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -4260,6 +4289,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1262975003}
+  - {fileID: 690330137}
   m_Father: {fileID: 0}
   m_RootOrder: 3
 --- !u!143 &1472402930
@@ -4300,6 +4330,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dead_zone_joystick: .100000001
+--- !u!114 &1472402933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1472402928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4560992c5c2511b4989c55cbc65e4248, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  look_at: {fileID: 1472402928}
+  eye: {fileID: 2087762531}
+--- !u!95 &1472402934
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1472402928}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
+  m_Controller: {fileID: 9100000, guid: 1dfab3d0f6911174684e612cf9c924b6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &1488600467
 GameObject:
   m_ObjectHideFlags: 0

@@ -25,6 +25,10 @@ namespace Controller {
 				_init_cache();
 			}
 
+			protected void Update() {
+				update_motor();
+			}
+
 			/// <summary>
 			/// actualiza todo el motor solo debe de ser llamada
 			/// por el controll
@@ -39,7 +43,7 @@ namespace Controller {
 			/// </summary>
 			/// <param name="move_vector">vector de movimiento que genero el control</param>
 			protected void _proccess_motion() {
-				// trasformar el vector de movimiento a WordSpace
+				// trasformar el vector de movimiento a WorldSpace
 				_move_vector = _transform.TransformDirection( _move_vector );
 				// normaliza el vector si su magnitud es mayor a 1
 				if ( _move_vector.magnitude > 1 )

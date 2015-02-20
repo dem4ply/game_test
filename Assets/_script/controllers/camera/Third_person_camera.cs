@@ -30,7 +30,6 @@ namespace Controller{
 			private Vector3 _desired_position = Vector3.zero;
 
 			private Vector2 _rotation_vector = Vector2.zero;
-			private float _distance = 0f;
 
 			protected Transform _transform;
 

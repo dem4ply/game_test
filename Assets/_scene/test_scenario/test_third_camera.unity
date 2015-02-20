@@ -4267,6 +4267,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1472402929}
   - 143: {fileID: 1472402930}
+  - 114: {fileID: 1472402935}
   - 114: {fileID: 1472402932}
   - 114: {fileID: 1472402931}
   - 114: {fileID: 1472402933}
@@ -4326,10 +4327,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1472402928}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18bdb7e295eb83945b15809212192af7, type: 3}
+  m_Script: {fileID: 11500000, guid: d1cc12d750108c14080bd093ded64a82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dead_zone_joystick: .100000001
+  eye: {fileID: 1472402933}
 --- !u!114 &1472402933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4343,17 +4345,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   look_at: {fileID: 690330137}
   eye: {fileID: 2087762531}
-  distance: 5
+  current_distance: 2
   distance_min: 1
   distance_max: 10
+  orbit_smooth: .0500000007
   distance_smooth: .0500000007
-  x_mouse_sensitivity: 5
-  y_mouse_sensitivity: 5
-  mouse_wheel_sensitivity: 5
-  y_min_limit: -40
+  sensitivity_horizontal: 5
+  sensitivity_vertical: 5
+  sensitivity_distance: 5
+  y_min_limit: -30
   y_max_limit: 80
-  x_smoot: .0199999996
-  y_smoot: .100000001
 --- !u!95 &1472402934
 Animator:
   serializedVersion: 3
@@ -4369,6 +4370,26 @@ Animator:
   m_ApplyRootMotion: 1
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &1472402935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1472402928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9b665fb6e57b7648a89ca1b13e7407d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key_map: player 1
+  controller: {fileID: 1472402932}
+  axis_mouse: {x: 0, y: 0}
+  axis_esdf: {x: 0, y: 0, z: 0}
+  mouse_pos: {x: 0, y: 0, z: 0}
+  mouse_wheel: 0
+  dead_zone_esdf_axis: .00999999978
+  dead_zone_mouse_axis: .00999999978
+  dead_zone_mouse_wheel: .00999999978
 --- !u!1 &1488600467
 GameObject:
   m_ObjectHideFlags: 0

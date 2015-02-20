@@ -116,9 +116,6 @@ namespace Controller {
 				return false;
 			}
 
-			protected void OnControllerColliderHit( ControllerColliderHit hit ) {
-			}
-
 			/// <summary>
 			/// inicializa el chache del script
 			/// </summary>

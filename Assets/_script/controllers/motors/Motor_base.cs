@@ -9,10 +9,15 @@ namespace Controller {
 			public float move_speed = 10f;
 			public float jump_speed = 4f;
 
+			public float slide_threshold = 0.6f;
+			public float max_slice_controllable = 0.4f;
+
 			protected Transform _transform;
 			protected CharacterController _character_controller;
-			protected Vector3 _move_vector;
+			public Vector3 _move_vector;
 			protected float _vertical_velocity;
+
+			public Vector3 slice_direction = Vector3.zero;
 
 			/// <summary>
 			/// vector de movimiento
@@ -70,10 +75,12 @@ namespace Controller {
 				// normaliza el vector si su magnitud es mayor a 1
 				if ( _move_vector.magnitude > 1 )
 					_move_vector.Normalize();
+
 				// multiplicar el vector de movimiento por la velocidad
+				apply_slice();
 				_move_vector *= move_speed;
-				apply_gravity();
 				_move_vector.y = _vertical_velocity;
+				apply_gravity();
 				// convertir el movimiento de m/f a m/s
 				_move_vector *= Time.deltaTime;
 				// mandar el el vector de movimiento al character controller
@@ -87,8 +94,8 @@ namespace Controller {
 			protected void apply_gravity() {
 				if ( !_character_controller.isGrounded )
 					_vertical_velocity -= Physics.gravity.magnitude * Time.deltaTime;
-				else if (is_no_jumping)
-					_vertical_velocity = 0f;
+				else if (_character_controller.isGrounded && _move_vector.y < -1)
+					_move_vector.y = -1;
 			}
 
 			/// <summary>
@@ -100,6 +107,25 @@ namespace Controller {
 							Camera.main.transform.eulerAngles.y,
 							_transform.eulerAngles.z);
 				}
+			}
+
+			protected void apply_slice() {
+				if ( !_character_controller.isGrounded )
+					return;
+				slice_direction = Vector3.zero;
+				RaycastHit hit_info;
+				Debug.DrawRay( _transform.position + Vector3.up , Vector3.down);
+				if ( Physics.Raycast( _transform.position + Vector3.up, Vector3.down, out hit_info ) ) {
+					Debug.Log( hit_info.normal.ToString() );
+					if ( hit_info.normal.y < slide_threshold ) {
+						slice_direction = new Vector3(hit_info.normal.x, -hit_info.normal.y, hit_info.normal.z);
+					}
+				}
+				Debug.Log( slice_direction.ToString() + " : " + slice_direction.magnitude.ToString() );
+				if ( slice_direction.magnitude < max_slice_controllable )
+					_move_vector += slice_direction;
+				else
+					_move_vector = slice_direction;
 			}
 
 			/// <summary>

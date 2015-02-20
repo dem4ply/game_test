@@ -21,6 +21,10 @@ namespace Controller {
 				eye.add_distance( distance );
 			}
 
+			public void jump() {
+				_motor.jump();
+			}
+
 			protected override void _init_cache() {
 				base._init_cache();
 				if ( eye == null )

@@ -42,6 +42,10 @@ namespace Controller {
 					controller.moving_camera( axis_mouse );
 				if ( pass_dead_zone_mouse_wheel )
 					controller.add_distace( mouse_wheel );
+
+				if ( Input.GetButton( "Jump" ) ) {
+					controller.jump();
+				}
 			}
 
 			public void update_all_axis() {

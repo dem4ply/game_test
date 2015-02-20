@@ -6,12 +6,17 @@ namespace Controller {
 	namespace Motor {
 		public class Motor_base : MonoBehaviour {
 
-			public float move_speed = 10.0f;
+			public float move_speed = 10f;
+			public float jump_speed = 4f;
 
 			protected Transform _transform;
 			protected CharacterController _character_controller;
 			protected Vector3 _move_vector;
+			protected float _vertical_velocity;
 
+			/// <summary>
+			/// vector de movimiento
+			/// </summary>
 			public Vector3 move_vector {
 				get {
 					return _move_vector;
@@ -21,11 +26,28 @@ namespace Controller {
 				}
 			}
 
+			/// <summary>
+			/// esta saltando el personaje
+			/// </summary>
+			public bool is_jumping {
+				get;
+				protected set;
+			}
+
+			/// <summary>
+			/// no esta saltando el personaje
+			/// </summary>
+			public bool is_no_jumping {
+				get {
+					return !is_jumping;
+				}
+			}
+
 			protected void Awake() {
 				_init_cache();
 			}
 
-			protected void Update() {
+			protected void LateUpdate() {
 				update_motor();
 			}
 
@@ -50,10 +72,23 @@ namespace Controller {
 					_move_vector.Normalize();
 				// multiplicar el vector de movimiento por la velocidad
 				_move_vector *= move_speed;
+				apply_gravity();
+				_move_vector.y = _vertical_velocity;
 				// convertir el movimiento de m/f a m/s
 				_move_vector *= Time.deltaTime;
 				// mandar el el vector de movimiento al character controller
 				_character_controller.Move( _move_vector );
+				is_jumping = false;
+			}
+
+			/// <summary>
+			/// agrega la gravedad al vector de movimiento
+			/// </summary>
+			protected void apply_gravity() {
+				if ( !_character_controller.isGrounded )
+					_vertical_velocity -= Physics.gravity.magnitude * Time.deltaTime;
+				else if (is_no_jumping)
+					_vertical_velocity = 0f;
 			}
 
 			/// <summary>
@@ -65,6 +100,23 @@ namespace Controller {
 							Camera.main.transform.eulerAngles.y,
 							_transform.eulerAngles.z);
 				}
+			}
+
+			/// <summary>
+			/// aplica la fuerza para saltar
+			/// </summary>
+			/// <returns>cierto si logro saltar</returns>
+			public bool jump() {
+				Debug.Log( _character_controller.isGrounded );
+				if ( _character_controller.isGrounded ) {
+					_vertical_velocity = jump_speed;
+					is_jumping = true;
+					return true;
+				}
+				return false;
+			}
+
+			protected void OnControllerColliderHit( ControllerColliderHit hit ) {
 			}
 
 			/// <summary>

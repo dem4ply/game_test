@@ -6,6 +6,7 @@ namespace Controller {
 		public class Player_controller : Controller_base {
 
 			public Eye.Third_person_camera eye;
+			public Player_animator _player_animator;
 
 			protected void Update() {
 				//_joystick.update_all();
@@ -29,6 +30,7 @@ namespace Controller {
 				base._init_cache();
 				if ( eye == null )
 					eye = GetComponent<Eye.Third_person_camera>();
+				_player_animator = GetComponent<Player_animator>();
 			}
 		}
 	}

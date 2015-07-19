@@ -28,7 +28,7 @@ namespace Controller {
 			/// <summary>
 			/// vector de movimiento
 			/// </summary>
-			public Vector3 move_vector {
+			public virtual Vector3 move_vector {
 				get {
 					return _move_vector;
 				}

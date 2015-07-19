@@ -4413,6 +4413,7 @@ GameObject:
   - 114: {fileID: 1472402932}
   - 114: {fileID: 1472402931}
   - 114: {fileID: 1472402933}
+  - 114: {fileID: 1472402934}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -4461,6 +4462,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   move_speed: 7
   jump_speed: 4
+  terminal_speed: 45
+  slide_threshold: .600000024
+  max_slice_controllable: .400000006
+  _move_vector: {x: 0, y: 0, z: 0}
+  _vertical_velocity: 0
+  slice_direction: {x: 0, y: 0, z: 0}
 --- !u!114 &1472402932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4497,6 +4504,18 @@ MonoBehaviour:
   sensitivity_distance: 5
   y_min_limit: -30
   y_max_limit: 80
+--- !u!114 &1472402934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1472402928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aff71dc04fb48164c80eccb4bcd5c002, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 1262975004}
 --- !u!114 &1472402935
 MonoBehaviour:
   m_ObjectHideFlags: 0

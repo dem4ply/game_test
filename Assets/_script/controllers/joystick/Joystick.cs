@@ -36,8 +36,8 @@ namespace Controller {
 
 			protected void Update() {
 				update_all_axis();
-				if ( pass_dead_zone_esdf_axis )
-					controller.change_moving_vector( axis_esdf );
+				//if ( pass_dead_zone_esdf_axis )
+				controller.change_moving_vector( axis_esdf );
 				if (Input.GetMouseButton(1) && pass_dead_zone_mouse_axis )
 					controller.moving_camera( axis_mouse );
 				if ( pass_dead_zone_mouse_wheel )

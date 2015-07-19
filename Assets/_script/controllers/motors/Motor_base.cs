@@ -7,15 +7,21 @@ namespace Controller {
 		public class Motor_base : MonoBehaviour {
 
 			public float move_speed = 10f;
-			public float jump_speed = 4f;
+			public float jump_force = 4f;
+			public float terminal_speed = 45f;
+
+			public float rotation_speed = 10f;
+
+			public Vector3 max_move_speed = new Vector3( 10, 0, 10 ); 
 
 			public float slide_threshold = 0.6f;
 			public float max_slice_controllable = 0.4f;
 
 			protected Transform _transform;
-			protected CharacterController _character_controller;
+			//protected CharacterController _character_controller;
+			protected Rigidbody _rididbody;
 			public Vector3 _move_vector;
-			protected float _vertical_velocity;
+			public float _vertical_velocity;
 
 			public Vector3 slice_direction = Vector3.zero;
 
@@ -48,17 +54,29 @@ namespace Controller {
 				}
 			}
 
-			protected void Awake() {
-				_init_cache();
+			/// <summary>
+			/// si esta el personaje en el piso
+			/// </summary>
+			public bool is_grounded {
+				get;
+				protected set;
 			}
 
-			protected void LateUpdate() {
+			/// <summary>
+			/// contructor
+			/// </summary>
+			protected void Awake() {
+				_init_cache();
+				_rididbody.freezeRotation = true;
+			}
+
+			protected void FixedUpdate() {
 				update_motor();
 			}
 
 			/// <summary>
 			/// actualiza todo el motor solo debe de ser llamada
-			/// por el controll
+			/// por el control
 			/// </summary>
 			public void update_motor() {
 				_snap_align_character_with_camera();
@@ -68,34 +86,21 @@ namespace Controller {
 			/// <summary>
 			/// procesa el vector de movimiento
 			/// </summary>
-			/// <param name="move_vector">vector de movimiento que genero el control</param>
 			protected void _proccess_motion() {
-				// trasformar el vector de movimiento a WorldSpace
-				_move_vector = _transform.TransformDirection( _move_vector );
-				// normaliza el vector si su magnitud es mayor a 1
 				if ( _move_vector.magnitude > 1 )
 					_move_vector.Normalize();
+				//_move_vector *= move_speed;
+				Vector3 desire_velocity = _transform.TransformDirection( _move_vector );
+				//Vector3 desire_velocity = ( _move_vector );
+				desire_velocity *= move_speed;
 
-				// multiplicar el vector de movimiento por la velocidad
-				apply_slice();
-				_move_vector *= move_speed;
-				_move_vector.y = _vertical_velocity;
-				apply_gravity();
-				// convertir el movimiento de m/f a m/s
-				_move_vector *= Time.deltaTime;
-				// mandar el el vector de movimiento al character controller
-				_character_controller.Move( _move_vector );
-				is_jumping = false;
-			}
+				Vector3 velocity = _rididbody.velocity;
+				Vector3 change_velocity = desire_velocity - velocity;
 
-			/// <summary>
-			/// agrega la gravedad al vector de movimiento
-			/// </summary>
-			protected void apply_gravity() {
-				if ( !_character_controller.isGrounded )
-					_vertical_velocity -= Physics.gravity.magnitude * Time.deltaTime;
-				else if (_character_controller.isGrounded && _move_vector.y < -1)
-					_move_vector.y = -1;
+				change_velocity = helper.vector3.clamp( change_velocity, -max_move_speed, max_move_speed);
+				change_velocity.y = 0;
+
+				_rididbody.AddForce( change_velocity, ForceMode.VelocityChange );
 			}
 
 			/// <summary>
@@ -103,29 +108,11 @@ namespace Controller {
 			/// </summary>
 			protected void _snap_align_character_with_camera() {
 				if ( _move_vector.x != 0 || _move_vector.z != 0 ) {
-					_transform.rotation = Quaternion.Euler(_transform.eulerAngles.x,
-							Camera.main.transform.eulerAngles.y,
-							_transform.eulerAngles.z);
+					Quaternion rot = Quaternion.Euler( _transform.eulerAngles.x,
+						Camera.main.transform.eulerAngles.y,
+						_transform.eulerAngles.z );
+					_transform.rotation = rot;
 				}
-			}
-
-			protected void apply_slice() {
-				if ( !_character_controller.isGrounded )
-					return;
-				slice_direction = Vector3.zero;
-				RaycastHit hit_info;
-				Debug.DrawRay( _transform.position + Vector3.up , Vector3.down);
-				if ( Physics.Raycast( _transform.position + Vector3.up, Vector3.down, out hit_info ) ) {
-					Debug.Log( hit_info.normal.ToString() );
-					if ( hit_info.normal.y < slide_threshold ) {
-						slice_direction = new Vector3(hit_info.normal.x, -hit_info.normal.y, hit_info.normal.z);
-					}
-				}
-				Debug.Log( slice_direction.ToString() + " : " + slice_direction.magnitude.ToString() );
-				if ( slice_direction.magnitude < max_slice_controllable )
-					_move_vector += slice_direction;
-				else
-					_move_vector = slice_direction;
 			}
 
 			/// <summary>
@@ -133,9 +120,8 @@ namespace Controller {
 			/// </summary>
 			/// <returns>cierto si logro saltar</returns>
 			public bool jump() {
-				Debug.Log( _character_controller.isGrounded );
-				if ( _character_controller.isGrounded ) {
-					_vertical_velocity = jump_speed;
+				if ( is_grounded && is_no_jumping ) {
+					_rididbody.velocity = new Vector3( _rididbody.velocity.x, calculate_jump_vertical_speed(), _rididbody.velocity.z );
 					is_jumping = true;
 					return true;
 				}
@@ -143,11 +129,27 @@ namespace Controller {
 			}
 
 			/// <summary>
+			/// calcula la fuerza del salto
+			/// </summary>
+			/// <returns>fuerza del salto</returns>
+			protected float calculate_jump_vertical_speed() {
+				return Mathf.Sqrt( 2 * jump_force * Physics.gravity.magnitude );
+			}
+
+			/// <summary>
+			/// evento cuando esta sobre un collider
+			/// </summary>
+			protected void OnCollisionStay() {
+				is_jumping = false;
+				is_grounded = true;
+			}
+
+			/// <summary>
 			/// inicializa el chache del script
 			/// </summary>
 			protected virtual void _init_cache() {
 				_transform = transform;
-				_character_controller = GetComponent<CharacterController>();
+				_rididbody = GetComponent<Rigidbody>();
 			}
 		}
 	}
